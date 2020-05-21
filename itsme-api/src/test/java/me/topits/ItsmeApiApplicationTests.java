@@ -1,13 +1,11 @@
 package me.topits;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import me.topits.model.BaseResponse;
 
-@SpringBootTest
-class ItsmeApiApplicationTests {
+public class ItsmeApiApplicationTests {
 
-    @Test
-    void contextLoads() {
+    public static void main(String[] args) {
+        System.out.println(BaseResponse.success());
     }
 
 }

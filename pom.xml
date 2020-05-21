@@ -17,8 +17,10 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>mybatis-generator</module>
+        <module>itsme-api</module>
         <module>itsme-data</module>
+        <module>itsme-tools</module>
+        <module>mybatis-generator</module>
 
     </modules>
 
@@ -31,6 +33,18 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter</artifactId>
+                <version>2.3.0.RELEASE</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>2.3.0.RELEASE</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.mybatis</groupId>
@@ -67,6 +81,37 @@
                 <artifactId>fastjson</artifactId>
                 <version>1.2.60</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.8</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>1.3.2</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.11</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>1.9.4</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>5.3.5</version>
+            </dependency>
+
 
         </dependencies>
 
