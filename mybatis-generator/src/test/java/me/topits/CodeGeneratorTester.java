@@ -10,7 +10,6 @@ import java.util.List;
  */
 public class CodeGeneratorTester {
 
-
     public static void tableGenerator(List<String> tableList, String moduleName) {
         String databaseUrl = "jdbc:mysql://127.0.0.1:3311/mall_dev?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8";
         String databaseUser = "root";
