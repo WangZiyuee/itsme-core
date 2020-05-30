@@ -19,6 +19,7 @@
     <modules>
         <module>itsme-api</module>
         <module>itsme-data</module>
+        <module>itsme-datasource</module>
         <module>itsme-tools</module>
         <module>mybatis-generator</module>
 
@@ -65,6 +66,12 @@
             </dependency>
 
             <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+                <version>3.0.0</version>
+            </dependency>
+
+            <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>8.0.19</version>
@@ -80,6 +87,12 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>1.2.60</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>1.1.22</version>
             </dependency>
 
             <dependency>
