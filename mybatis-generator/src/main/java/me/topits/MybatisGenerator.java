@@ -17,11 +17,11 @@ import java.util.List;
 
 /**
  * @author Wang Ziyue
- * @since 2020/5/18 21:40
+ * @date 2020/5/18 21:40
  */
 @Data
 @Accessors(chain = true)
-public class CodeGenerator {
+public class MybatisGenerator {
     private String projectPath;
     private String packageName;
     private String moduleName;

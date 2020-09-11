@@ -6,9 +6,9 @@ import java.util.List;
 
 /**
  * @author Wang Ziyue
- * @since 2020/5/19 9:34
+ * @date 2020/5/19 9:34
  */
-public class CodeGeneratorTester {
+public class MybatisGeneratorTester {
 
     public static void tableGenerator(List<String> tableList, String moduleName) {
         String databaseUrl = "jdbc:mysql://127.0.0.1:3311/mall_dev?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8";
@@ -19,7 +19,7 @@ public class CodeGeneratorTester {
         String packageName = "me.topits";
 
         for (String tableName : tableList) {
-            CodeGenerator codeGenerator = new CodeGenerator()
+            MybatisGenerator mybatisGenerator = new MybatisGenerator()
                     .setDatabaseUrl(databaseUrl)
                     .setDatabaseUser(databaseUser)
                     .setDatabasePassword(databasePassword)
@@ -28,7 +28,7 @@ public class CodeGeneratorTester {
                     .setPackageName(packageName)
                     .setTableName(tableName)
                     .setModuleName(moduleName);
-            codeGenerator.execute();
+            mybatisGenerator.execute();
         }
     }
 

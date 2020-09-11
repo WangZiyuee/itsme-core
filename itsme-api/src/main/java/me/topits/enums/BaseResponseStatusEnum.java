@@ -22,17 +22,5 @@ public enum BaseResponseStatusEnum {
     private final String code;
     private final String message;
 
-    public static String getMessageByCode(String code) {
-        if (null == code) {
-            return null;
-        }
-        for (BaseResponseStatusEnum item : values()) {
-            if (item.code.equals(code)) {
-                return item.message;
-            }
-        }
-        return null;
-    }
-
 
 }

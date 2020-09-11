@@ -1,22 +1,25 @@
 package me.topits.model;
 
 import com.alibaba.fastjson.JSONObject;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
  * @author Wang Ziyue
- * @since 2020/5/20 21:13
+ * @date 2020/5/20 21:13
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Accessors(chain = true)
-public class BaseRequest {
-    /** 公共参数 */
-    private SystemParamsModel system;
+public class BaseRequest<T> {
     /** 请求参数 */
-    private JSONObject params;
+    private JSONObject request;
+    /** 系统参数 */
+    private SysParams sysParams;
+
+    public T toJavaObject(Class<T> tClass) {
+        if (request == null) {
+            return null;
+        }
+        return JSONObject.toJavaObject(request, tClass);
+    }
 }
