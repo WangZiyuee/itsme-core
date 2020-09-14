@@ -15,15 +15,15 @@ import java.util.Map;
 @Slf4j
 public class ThreadLocalContext {
 
-    public final static InheritableThreadLocal<Map<String, Object>> PARAMS = new InheritableThreadLocal<>();
-    public final static InheritableThreadLocal<Map<String, String>> HEADER = new InheritableThreadLocal<>();
+    public final static InheritableThreadLocal<JSONObject> PARAMS = new InheritableThreadLocal<>();
+    public final static InheritableThreadLocal<JSONObject> HEADER = new InheritableThreadLocal<>();
     public final static InheritableThreadLocal<SysParams> SYS_PARAMS = new InheritableThreadLocal<>();
     public final static InheritableThreadLocal<Object> RESULT = new InheritableThreadLocal<>();
 
     public static void buildRequestContext(RequestWrapper requestWrapper) {
         // TODO: 2020-09-07 body异常json 抛针对性异常
         // params
-        Map<String, Object> params = new HashMap<>(16);
+        JSONObject params = new JSONObject(16);
         if (requestWrapper.getContentType() != null
                 && requestWrapper.getContentType().contains("json")) {
             // application/json
@@ -42,7 +42,7 @@ public class ThreadLocalContext {
         ThreadLocalContext.PARAMS.set(params);
 
         // header
-        Map<String, String> header = new HashMap<>(32);
+        JSONObject header = new JSONObject(32);
         Enumeration<String> headerNames = requestWrapper.getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String key = headerNames.nextElement();
@@ -59,16 +59,22 @@ public class ThreadLocalContext {
         ThreadLocalContext.RESULT.set(object);
     }
 
-    public static Object getParams(String key) {
-        return PARAMS.get().get(key);
-    }
-
-    public static String getHeader(String key) {
-        return HEADER.get().get(key);
+    public static JSONObject getParams() {
+        return PARAMS.get();
     }
 
     public static SysParams getSysParams() {
         return SYS_PARAMS.get();
     }
+
+
+    public static Object getParam(String key) {
+        return PARAMS.get().get(key);
+    }
+
+    public static String getHeader(String key) {
+        return HEADER.get().getString(key);
+    }
+
 
 }

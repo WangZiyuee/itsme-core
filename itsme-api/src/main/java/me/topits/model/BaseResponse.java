@@ -49,4 +49,20 @@ public class BaseResponse implements Serializable {
                 .setTimestamp(System.currentTimeMillis());
     }
 
+    public static BaseResponse failure(BaseResponseStatusEnum statusEnum) {
+        return new BaseResponse()
+                .setCode(statusEnum.getCode())
+                .setMessage(statusEnum.getMessage())
+                .setData(new JSONObject())
+                .setTimestamp(System.currentTimeMillis());
+    }
+
+    public static BaseResponse failure(String code, String message) {
+        return new BaseResponse()
+                .setCode(code)
+                .setMessage(message)
+                .setData(new JSONObject())
+                .setTimestamp(System.currentTimeMillis());
+    }
+
 }

@@ -5,6 +5,8 @@ import me.topits.service.IRedisCache;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -16,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class RedisCacheServiceImpl implements IRedisCache {
 
-    final
+    private final
     StringRedisTemplate redisTemplate;
 
     public RedisCacheServiceImpl(StringRedisTemplate redisTemplate) {
@@ -29,6 +31,11 @@ public class RedisCacheServiceImpl implements IRedisCache {
     }
 
     @Override
+    public Boolean delete(String key) {
+       return redisTemplate.delete(key);
+    }
+
+    @Override
     public Boolean expire(String key, long timeout, TimeUnit unit) {
         return redisTemplate.expire(key, timeout, unit);
     }
@@ -36,6 +43,11 @@ public class RedisCacheServiceImpl implements IRedisCache {
     @Override
     public Boolean expireAt(String key, Date date) {
         return redisTemplate.expireAt(key, date);
+    }
+
+    @Override
+    public Boolean expireAt(String key, LocalDateTime localDateTime) {
+        return redisTemplate.expire(key, Duration.between(LocalDateTime.now(), localDateTime));
     }
 
     @Override
@@ -51,6 +63,21 @@ public class RedisCacheServiceImpl implements IRedisCache {
     @Override
     public void setString(String key, String value) {
         redisTemplate.opsForValue().set(key, value);
+    }
+
+    @Override
+    public void setString(String key, String value, long timeout, TimeUnit unit) {
+        redisTemplate.opsForValue().set(key, value, timeout, unit);
+    }
+
+    @Override
+    public void setString(String key, String value, Date date) {
+        redisTemplate.opsForValue().set(key, value, System.currentTimeMillis() - date.getTime(), TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public void setString(String key, String value, LocalDateTime localDateTime) {
+        redisTemplate.opsForValue().set(key, value, Duration.between(LocalDateTime.now(), localDateTime));
     }
 
     @Override
@@ -73,7 +100,6 @@ public class RedisCacheServiceImpl implements IRedisCache {
         redisTemplate.opsForValue().multiSet(maps);
     }
 
-
     @Override
     public Boolean setIfAbsent(String key, String value) {
         return redisTemplate.opsForValue().setIfAbsent(key, value);
@@ -84,5 +110,64 @@ public class RedisCacheServiceImpl implements IRedisCache {
         return redisTemplate.opsForValue().increment(key, delta);
     }
 
-    // TODO: 2020-09-11 完善
+    @Override
+    public Object hGet(String key, String hashKeys) {
+        return redisTemplate.opsForHash().get(key, hashKeys);
+    }
+
+    @Override
+    public void hPush(String key, String hashKey, Object value) {
+        redisTemplate.opsForHash().put(key, hashKey, value);
+    }
+
+    @Override
+    public Boolean hPutIfAbsent(String key, String hashKey, Object value) {
+        return redisTemplate.opsForHash().putIfAbsent(key, hashKey, value);
+    }
+
+    @Override
+    public void hDelete(String key, Object... hashKeys) {
+        redisTemplate.opsForHash().delete(key, hashKeys);
+    }
+
+    @Override
+    public Set<Object> hKeys(String key) {
+        return redisTemplate.opsForHash().keys(key);
+    }
+
+    @Override
+    public String lIndex(String key, long index) {
+        return redisTemplate.opsForList().index(key, index);
+    }
+
+    @Override
+    public Long lLeftPush(String key, String value) {
+        return redisTemplate.opsForList().leftPush(key, value);
+    }
+
+    @Override
+    public Long lLeftPushIfPresent(String key, String value) {
+        return redisTemplate.opsForList().leftPushIfPresent(key, value);
+    }
+
+    @Override
+    public Long lRightPush(String key, String value) {
+        return redisTemplate.opsForList().rightPush(key, value);
+    }
+
+    @Override
+    public Long lRightPushIfPresent(String key, String value) {
+        return redisTemplate.opsForList().rightPushIfPresent(key, value);
+    }
+
+    @Override
+    public void lSet(String key, long index, String value) {
+        redisTemplate.opsForList().set(key, index, value);
+    }
+
+    @Override
+    public Long lRemove(String key, long count, String value) {
+        return redisTemplate.opsForList().remove(key, count, value);
+    }
+
 }

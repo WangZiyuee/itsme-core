@@ -19,7 +19,7 @@ public class MybatisGeneratorTester {
         String packageName = "me.topits";
 
         for (String tableName : tableList) {
-            MybatisGenerator mybatisGenerator = new MybatisGenerator()
+            MybatisGeneratorConfig mybatisGeneratorConfig = new MybatisGeneratorConfig()
                     .setDatabaseUrl(databaseUrl)
                     .setDatabaseUser(databaseUser)
                     .setDatabasePassword(databasePassword)
@@ -28,7 +28,7 @@ public class MybatisGeneratorTester {
                     .setPackageName(packageName)
                     .setTableName(tableName)
                     .setModuleName(moduleName);
-            mybatisGenerator.execute();
+            mybatisGeneratorConfig.execute();
         }
     }
 

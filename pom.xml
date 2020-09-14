@@ -57,6 +57,13 @@
                 <version>${springboot.version}</version>
             </dependency>
 
+            <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-aop -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-aop</artifactId>
+                <version>${springboot.version}</version>
+            </dependency>
+
             <!--mysql-->
             <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
             <dependency>

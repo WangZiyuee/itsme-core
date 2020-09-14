@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-public class MybatisGenerator {
+public class MybatisGeneratorConfig {
     private String projectPath;
     private String packageName;
     private String moduleName;

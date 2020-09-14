@@ -10,13 +10,15 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class BaseRequest<T> {
+public class BaseRequest {
     /** 请求参数 */
     private JSONObject request;
     /** 系统参数 */
     private SysParams sysParams;
+    /** user ID */
+    private Long userId;
 
-    public T toJavaObject(Class<T> tClass) {
+    public <T> T toJavaObject(Class<T> tClass) {
         if (request == null) {
             return null;
         }
