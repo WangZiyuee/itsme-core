@@ -16,12 +16,12 @@ import java.util.concurrent.TimeUnit;
  **/
 @Slf4j
 @Service
-public class RedisCacheServiceImpl implements IRedisCache {
+public class RedisCacheImpl implements IRedisCache {
 
     private final
     StringRedisTemplate redisTemplate;
 
-    public RedisCacheServiceImpl(StringRedisTemplate redisTemplate) {
+    public RedisCacheImpl(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 

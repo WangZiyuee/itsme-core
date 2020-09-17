@@ -16,8 +16,8 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
  * @author QingKe
  * @date 2020-09-11 17:11
  **/
-@Configuration
 @EnableCaching
+@Configuration
 public class RedisConfig {
 
     @Bean

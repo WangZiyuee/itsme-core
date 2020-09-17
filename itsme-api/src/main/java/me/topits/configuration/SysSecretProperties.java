@@ -14,7 +14,7 @@ public class SysSecretProperties {
 
     public static String BASE_REQUEST_SECRET;
 
-    @Value("${sys.base.secret.request}")
+    @Value("${core.api.base.request.secret:secret}")
     public void setBaseRequestSecret(String baseRequestSecret) {
         SysSecretProperties.BASE_REQUEST_SECRET = baseRequestSecret;
     }
