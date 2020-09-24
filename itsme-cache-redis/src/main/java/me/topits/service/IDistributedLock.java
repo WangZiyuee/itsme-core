@@ -10,7 +10,7 @@ public interface IDistributedLock {
      * 获取锁
      *
      * @param key       key
-     * @param leaseTime 获取锁使用时间
+     * @param leaseTime 锁租赁时间
      * @param waitTime  等待获取锁时间
      * @return 锁
      */

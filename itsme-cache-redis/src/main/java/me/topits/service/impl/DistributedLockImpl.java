@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import me.topits.service.IDistributedLock;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -18,18 +17,14 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class DistributedLockImpl implements IDistributedLock {
 
-    final
+    @Resource
     RedissonClient redissonClient;
 
     /** LOCK前缀 */
     private static final String LOCK_KEY_PREFIX = "lock:";
 
-    public DistributedLockImpl(RedissonClient redissonClient) {
-        this.redissonClient = redissonClient;
-    }
-
     @Override
-    public Object tryLock(String key, long waitTime, long leaseTime) {
+    public Object tryLock(String key, long leaseTime, long waitTime) {
         try {
             RLock lock = redissonClient.getLock(LOCK_KEY_PREFIX + key);
             return lock.tryLock(waitTime, leaseTime, TimeUnit.SECONDS) ? lock : null;
