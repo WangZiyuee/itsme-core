@@ -1,19 +1,30 @@
 package me.topits.aop;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import me.topits.annotations.Decrypted;
+import me.topits.annotations.Encrypted;
 import me.topits.annotations.NeedLogin;
+import me.topits.configuration.SysSecretProperties;
+import me.topits.enums.BaseStatusEnum;
+import me.topits.exception.BaseException;
 import me.topits.exception.InvalidTokenException;
 import me.topits.filter.ThreadLocalContext;
 import me.topits.model.BaseRequest;
+import me.topits.model.BaseResponse;
 import me.topits.service.IAccessTokenService;
 import me.topits.service.model.AccessTokenCheckModel;
-import org.aspectj.lang.JoinPoint;
+import me.topits.utils.RsaUtil;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.lang.reflect.Method;
 
 /**
  * @author QingKe
@@ -30,46 +41,83 @@ public class WebAspect {
     @Pointcut(value = "(@annotation(org.springframework.web.bind.annotation.RequestMapping)" +
             "||@annotation(org.springframework.web.bind.annotation.PostMapping)) " +
             "||@annotation(org.springframework.web.bind.annotation.GetMapping)")
-    private void webPointcut() {
+    private void pointcut() {
     }
 
-    @Before(value = "webPointcut()")
-    public void handleBefore(JoinPoint joinPoint) {
-        BaseRequest baseRequest = getBaseRequest(joinPoint.getArgs());
-        if (baseRequest != null) {
-            baseRequest.setRequest(ThreadLocalContext.getParams())
-                    .setSysParams(ThreadLocalContext.getSysParams());
-        }
-    }
+    /**
+     * <p>
+     * aop执行顺序
+     * Around
+     * Before
+     * *Method
+     * Around
+     * After
+     * AfterReturning
+     * </p>
+     */
+    @Around("pointcut()")
+    public Object handleAround(ProceedingJoinPoint joinPoint) throws Throwable {
+        Object response;
+        BaseRequest<?> baseRequest = this.getBaseRequest(joinPoint.getArgs());
 
-    @Before(value = "webPointcut()&&@annotation(needLogin)")
-    public void handleBefore(JoinPoint joinPoint, NeedLogin needLogin) {
-        BaseRequest baseRequest = getBaseRequest(joinPoint.getArgs());
+        // signature
+        Signature signature = joinPoint.getSignature();
+        MethodSignature methodSignature = ((MethodSignature) signature);
+        Object target = joinPoint.getTarget();
+        Method method = target.getClass().getMethod(methodSignature.getName(), methodSignature.getParameterTypes());
+        boolean isNeedLoginCheck = method.getAnnotation(NeedLogin.class) != null;
+        boolean isNeedDecrypted = method.getAnnotation(Decrypted.class) != null;
+        boolean isNeedEncrypted = method.getAnnotation(Encrypted.class) != null;
 
-        if (needLogin != null && needLogin.value()) {
-            AccessTokenCheckModel checkModel;
+        // need login
+        if (isNeedLoginCheck) {
             String accessToken = ThreadLocalContext.getSysParams().getAccessToken();
-            try {
-                checkModel = accessTokenService.checkAccessToken(accessToken);
-            } catch (Exception e) {
-                throw new InvalidTokenException();
-            }
-
-            if (checkModel.isValid() && baseRequest != null) {
-                baseRequest.setUserId(checkModel.getUserId())
-                        .setRequest(ThreadLocalContext.getParams())
-                        .setSysParams(ThreadLocalContext.getSysParams());
+            AccessTokenCheckModel checkModel = accessTokenService.checkAccessToken(accessToken);
+            if (checkModel.isValid()) {
+                if (baseRequest != null) {
+                    JSONObject extra = new JSONObject();
+                    extra.put("userId", checkModel.getUserId());
+                    baseRequest.setExtraParams(extra);
+                }
             } else {
                 throw new InvalidTokenException(checkModel.getErrorMessage());
             }
         }
+
+        // need decrypted
+        if (isNeedDecrypted) {
+            String data = ThreadLocalContext.getParams().getString("data");
+            String param = RsaUtil.encrypt(SysSecretProperties.RSA_PRIVATE_KEY, data);
+            if (param == null) {
+                throw new BaseException(BaseStatusEnum.AES_DECRYPTED_INVALID);
+            }
+            ThreadLocalContext.PARAMS.set(JSONObject.parseObject(param));
+        }
+
+        if (baseRequest != null) {
+            baseRequest.setRequest(ThreadLocalContext.getParams())
+                    .setSysParams(ThreadLocalContext.getSysParams());
+        }
+
+        response = joinPoint.proceed();
+
+        // need encrypted
+        if (isNeedEncrypted) {
+            if (response instanceof BaseResponse) {
+                Object responseData = ((BaseResponse<?>) response).getData();
+                response = BaseResponse.success(RsaUtil.decrypt(SysSecretProperties.RSA_PUBLIC_KEY,
+                        JSONObject.toJSONString(responseData)));
+            }
+        }
+        return response;
     }
 
-    private BaseRequest getBaseRequest(Object[] args) {
-        BaseRequest baseRequest = null;
+    private BaseRequest<?> getBaseRequest(Object[] args) {
+        BaseRequest<?> baseRequest = null;
         for (Object arg : args) {
             if (arg instanceof BaseRequest) {
-                baseRequest = ((BaseRequest) arg);
+                baseRequest = ((BaseRequest<?>) arg);
+                break;
             }
         }
         return baseRequest;

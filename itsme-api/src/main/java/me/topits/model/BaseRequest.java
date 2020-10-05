@@ -3,6 +3,7 @@ package me.topits.model;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import me.topits.validator.JsonValidator;
 
 /**
  * @author Wang Ziyue
@@ -10,18 +11,22 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class BaseRequest {
+public class BaseRequest<T> {
     /** 请求参数 */
     private JSONObject request;
+    /** 拓展参数 */
+    private JSONObject extraParams;
     /** 系统参数 */
     private SysParams sysParams;
-    /** user ID */
-    private Long userId;
 
-    public <T> T toJavaObject(Class<T> tClass) {
+    public T toJavaObject(Class<T> tClass) {
         if (request == null) {
             return null;
         }
         return JSONObject.toJavaObject(request, tClass);
+    }
+
+    public T toJavaObjectAndValidator(Class<T> tClass){
+        return JsonValidator.toJavaObject(request, tClass);
     }
 }

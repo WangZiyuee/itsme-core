@@ -9,14 +9,16 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum BaseResponseStatusEnum {
+public enum BaseStatusEnum {
 
     /** API响应基础枚举 */
     SUCCESS("0000", "Success"),
     FAILURE("0001", "Failure"),
-    ACCESS_TOKEN_INVALID("0002", "Access Token Invalid"),
-    API_NO_FOUND("0003", "Api Not Found"),
-    ILLEGAL_ARGUMENT("0004", "Illegal Argument");
+    API_NO_FOUND("0002", "Api Not Found"),
+    ILLEGAL_ARGUMENT("0003", "Illegal Argument"),
+    ACCESS_TOKEN_INVALID("1000", "Access Token Invalid"),
+    AES_DECRYPTED_INVALID("1001", "Decrypted Invalid"),
+    AES_ENCRYPTED_INVALID("1002", "Encrypted Failure");
 
     private final String code;
     private final String message;

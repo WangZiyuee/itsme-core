@@ -1,6 +1,6 @@
 package me.topits.exception;
 
-import me.topits.enums.BaseResponseStatusEnum;
+import me.topits.enums.BaseStatusEnum;
 import me.topits.utils.ParseUtil;
 
 /**
@@ -9,29 +9,29 @@ import me.topits.utils.ParseUtil;
  **/
 public class BaseException extends RuntimeException {
 
-    private final String code;
+    private final BaseStatusEnum statusEnum;
 
     public BaseException(String message) {
         super(message);
-        this.code = BaseResponseStatusEnum.FAILURE.getCode();
+        this.statusEnum = BaseStatusEnum.FAILURE;
     }
 
     public BaseException(String format, Object... args) {
         super(ParseUtil.format(format, args));
-        this.code = BaseResponseStatusEnum.FAILURE.getCode();
+        this.statusEnum = BaseStatusEnum.FAILURE;
     }
 
-    public BaseException(BaseResponseStatusEnum statusEnum) {
+    public BaseException(BaseStatusEnum statusEnum) {
         super(statusEnum.getMessage());
-        this.code = statusEnum.getCode();
+        this.statusEnum = statusEnum;
     }
 
-    public BaseException(BaseResponseStatusEnum statusEnum, String message) {
+    public BaseException(BaseStatusEnum statusEnum, String message) {
         super(message);
-        this.code = statusEnum.getCode();
+        this.statusEnum = statusEnum;
     }
 
-    public String getCode() {
-        return code;
+    public BaseStatusEnum getStatusEnum() {
+        return statusEnum;
     }
 }

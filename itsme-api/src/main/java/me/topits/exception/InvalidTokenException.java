@@ -1,6 +1,6 @@
 package me.topits.exception;
 
-import me.topits.enums.BaseResponseStatusEnum;
+import me.topits.enums.BaseStatusEnum;
 
 /**
  * @author QingKe
@@ -9,7 +9,7 @@ import me.topits.enums.BaseResponseStatusEnum;
 public class InvalidTokenException extends RuntimeException{
 
     public InvalidTokenException() {
-        super(BaseResponseStatusEnum.ACCESS_TOKEN_INVALID.getMessage());
+        super(BaseStatusEnum.ACCESS_TOKEN_INVALID.getMessage());
     }
 
     public InvalidTokenException(String message) {

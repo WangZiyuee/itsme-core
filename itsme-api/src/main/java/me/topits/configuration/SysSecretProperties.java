@@ -12,11 +12,23 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SysSecretProperties {
 
-    public static String BASE_REQUEST_SECRET;
+    public static String AES_SECRET;
+    public static String RSA_PUBLIC_KEY;
+    public static String RSA_PRIVATE_KEY;
 
-    @Value("${core.api.base.request.secret:secret}")
-    public void setBaseRequestSecret(String baseRequestSecret) {
-        SysSecretProperties.BASE_REQUEST_SECRET = baseRequestSecret;
+    @Value("${core.api.secret.ase.secret:default_secret}")
+    public void setAesSecret(String aesSecret) {
+        SysSecretProperties.AES_SECRET = aesSecret;
+    }
+
+    @Value("${core.api.secret.rsa.public:MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgcrUVli79uuVaOc7P8dGjgkHMWIF6Rhm3D4M2e1h6H3zTEMhaJe68GVpoPKJbudLer3M7Ms8y3+85h90r3bg5b/hkFuLNBtHmKxNGXdKgY9KQC76e5kyEWf9nfE2uNhoHw7LCO5MkIK4x3G9cGlNuTPC4v7QoD6ZqeD1Hec21CCQFfJS94EGo3Gw0SVAuZbCfa8QOOIA48hQOZ0CdJH9HJ+MuEYbYHgz7M4qiGQRWmkmhHowYnK7fSZN6sg1yJKfCF6DK78h4oSQl82yAfvfBL0heaUrCT2s8gm4A8+xMOS6XJbjA09tIFba6Q5bAvGzQ+jzbjOBpyjtPu3CcokenwIDAQAB}")
+    public void setRsaPublicKey(String rsaPublicKey) {
+        SysSecretProperties.RSA_PUBLIC_KEY = rsaPublicKey;
+    }
+
+    @Value("${core.api.secret.rsa.private:MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCBytRWWLv265Vo5zs/x0aOCQcxYgXpGGbcPgzZ7WHoffNMQyFol7rwZWmg8olu50t6vczsyzzLf7zmH3SvduDlv+GQW4s0G0eYrE0Zd0qBj0pALvp7mTIRZ/2d8Ta42GgfDssI7kyQgrjHcb1waU25M8Li/tCgPpmp4PUd5zbUIJAV8lL3gQajcbDRJUC5lsJ9rxA44gDjyFA5nQJ0kf0cn4y4RhtgeDPsziqIZBFaaSaEejBicrt9Jk3qyDXIkp8IXoMrvyHihJCXzbIB+98EvSF5pSsJPazyCbgDz7Ew5LpcluMDT20gVtrpDlsC8bND6PNuM4GnKO0+7cJyiR6fAgMBAAECggEATc9D9rPhk4juHGKrUXPs50+gQUmrk28ukxCb8bXvAUsopWqFR8fWqTGS3osoOxVsWZwZk0fQHYtpumfXMy3Ia9PZrQpEbKuCA5Qf8IlkYEF/2PSQ87IGowq9r4chMDWETkI3FBaQTf4gOmkEkbR/hOz0A9ORTM/anU4ghJnNc+Nj7zXo/nuW0L47YDXp0wMKIyrU79AFZ9277nUjhVAoZ32ks1nDa7vpgKCGnCyE40VAcIrqETs18gXlwsq8n7ZJdq71pPtpIjHoE3ulQEsFRw2DVkELVexBaPhHSmG2qP5EieJ6V0Q2mdoG572EVpy8iPbX+2ZSA3PXeC5Tnf++mQKBgQDrJVo/X82NcL3vozuzCzVJJz2uL0CLLGkJIhh67PjqeyNEmjxsVRgSJclfYREcyeyxVmsf/VuGH8kulXg1F18Ms0/JN2PXspcTVLA0oEbRXiS+0+Lj23ekb3PNSh/39zbfvprv4EMbCF23UJXZYQHaCEhPS8ZmasmOk6UmXTCIiwKBgQCNTZNnQnhpf9EK3SWYsy1is0skFL2N+2B6Wb533NpeoIiqwqaDtgQghdqVIgadl7YXj92Q33MMOpOq78r1wyIxWdtfgkH7SixTeu53guWlA0O8XYWk/mf+qclsORIWCDLOSByyYLrSWcC4XBlSohRrv+O/d3z9QGMhQ4vutVbwvQKBgHrEPaHousClpASBDKIlr+RJgIJ4WRJQVWZXTsCfCDYjo/4lKHbG1pJi+Ae7/dsx8UmE/NjuxeH4pmiT0PanBRD0bSt4p7/tlcKZ7IUNSOv2YujeZw7ffk9zgNolYRttDlEyimHCjEaIz6Tthc7APt8+g8IiparDBghSPV8SOEyRAoGBAIPsA0yKkGTewkoEQc+YqSzW+7ZJ7tcZ8+8Gzn6VoQJrmmzioheh3aSHk5VcWRTUyVqiJFfXZk/qeGdEzRY6AjhVDizTLcrwawXdZboKaWBv9dNs9RMfufPWjIkPl0UejmBsju4yxPkSdo0o3zN4wtv+ISFm6zh93o71wzUv9GV5AoGBAOFvV4uldCNjnIgjHRZsNsGwoVcRFCwFJ6DwU4qg8YTT3mN9WWEaOhCL8W1QSjqDWMjzQxDOeZk9u4J8y8k3Q5isX6Ec49ZtpvI2pGrswAgCaBLaoIVfX02qUnPTsruHcqRQws30KXEXd7p5hdS9WyyE/G6+SqMp74uMY0RPR6rw7}")
+    public void setRsaPrivateKey(String rsaPrivateKey) {
+        SysSecretProperties.RSA_PRIVATE_KEY = rsaPrivateKey;
     }
 
 }

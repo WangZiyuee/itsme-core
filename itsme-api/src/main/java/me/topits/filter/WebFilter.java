@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -27,7 +28,8 @@ public class WebFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest httpServletRequest,
                                     @NonNull HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
-        long startTime = System.currentTimeMillis();
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
 
         RequestWrapper requestWrapper = new RequestWrapper(httpServletRequest);
         ThreadLocalContext.buildRequestContext(requestWrapper);
@@ -35,14 +37,15 @@ public class WebFilter extends OncePerRequestFilter {
 
         // doFilter
         filterChain.doFilter(requestWrapper, responseWrapper);
+        stopWatch.stop();
 
-        log.info("> HTTP | Method:{} | URL:{} | Status:{} | Header:{} | RequestBody:{} | ResponseBody:{} | Time:{}ms",
+        log.info("> HTTP | Method:{} | URI:{} | Status:{} | RequestBody:{} | ResponseBody:{} | Header:{} | Time:{}ms",
                 httpServletRequest.getMethod(),
                 httpServletRequest.getRequestURI(),
                 httpServletResponse.getStatus(),
-                JSONObject.toJSONString(ThreadLocalContext.HEADER.get(), SerializerFeature.WriteMapNullValue),
                 JSONObject.toJSONString(ThreadLocalContext.PARAMS.get(), SerializerFeature.WriteMapNullValue),
                 JSONObject.toJSONString(ThreadLocalContext.RESULT.get(), SerializerFeature.WriteMapNullValue),
-                System.currentTimeMillis() - startTime);
+                JSONObject.toJSONString(ThreadLocalContext.HEADER.get(), SerializerFeature.WriteMapNullValue),
+                stopWatch.getTotalTimeMillis());
     }
 }

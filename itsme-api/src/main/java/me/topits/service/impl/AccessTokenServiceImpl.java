@@ -3,7 +3,7 @@ package me.topits.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import me.topits.configuration.SysSecretProperties;
-import me.topits.enums.BaseResponseStatusEnum;
+import me.topits.enums.BaseStatusEnum;
 import me.topits.model.SysConstants;
 import me.topits.service.IAccessTokenService;
 import me.topits.service.IRedisCache;
@@ -15,6 +15,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 
 /**
@@ -27,12 +28,8 @@ public class AccessTokenServiceImpl implements IAccessTokenService {
 
     private static final String USER_LOGIN_TOKEN_FORMAT = "user:login:token:%s";
 
-    final
+    @Resource
     IRedisCache redisCache;
-
-    public AccessTokenServiceImpl(IRedisCache redisCache) {
-        this.redisCache = redisCache;
-    }
 
     @Override
     public String createAccessToken(Long userId, LocalDateTime timeout) {
@@ -48,25 +45,28 @@ public class AccessTokenServiceImpl implements IAccessTokenService {
                 cacheAccessToken.getTokenInfo(), timeout);
 
         cacheAccessToken.setMd5(DigestUtils.md5Hex(cacheAccessToken.getTokenInfo() + SysConstants.BASE_MD5_SALT));
-        return AesUtil.encrypt(JSONObject.toJSONString(cacheAccessToken), SysSecretProperties.BASE_REQUEST_SECRET);
+        return AesUtil.encrypt(JSONObject.toJSONString(cacheAccessToken), SysSecretProperties.AES_SECRET);
     }
 
     @Override
     public AccessTokenCheckModel checkAccessToken(String accessTokenStr) {
         AccessTokenCheckModel check = new AccessTokenCheckModel();
         if (Strings.isBlank(accessTokenStr)) {
-            return check.setErrorMessage(BaseResponseStatusEnum.ACCESS_TOKEN_INVALID.getMessage());
+            return check.setErrorMessage(BaseStatusEnum.ACCESS_TOKEN_INVALID.getMessage());
         }
-        String decryptData = AesUtil.decrypt(accessTokenStr, SysSecretProperties.BASE_REQUEST_SECRET);
+        String decryptData = AesUtil.decrypt(accessTokenStr, SysSecretProperties.AES_SECRET);
+        if (decryptData == null) {
+            return check.setErrorMessage(BaseStatusEnum.ACCESS_TOKEN_INVALID.getMessage());
+        }
 
         AccessTokenModel accessToken = JSONObject.parseObject(decryptData, AccessTokenModel.class);
-        boolean md5Check = false;
+        boolean md5Check;
         String cacheAccessToken = "";
         if (accessToken == null
                 || Strings.isBlank(accessToken.getMd5())
                 || accessToken.getUserId() == null
                 || accessToken.getTimestamp() == null) {
-            return check.setErrorMessage(BaseResponseStatusEnum.ACCESS_TOKEN_INVALID.getMessage());
+            return check.setErrorMessage(BaseStatusEnum.ACCESS_TOKEN_INVALID.getMessage());
 
         } else {
             md5Check = accessToken.getMd5().equals(DigestUtils.md5Hex(accessToken.getTokenInfo() + SysConstants.BASE_MD5_SALT));
@@ -95,7 +95,7 @@ public class AccessTokenServiceImpl implements IAccessTokenService {
         return check;
     }
 
-    private void logInfo(String accessTokenStr, String decryptData, boolean md5Check, String cacheAccessToken){
+    private void logInfo(String accessTokenStr, String decryptData, boolean md5Check, String cacheAccessToken) {
         log.info("> LoginCheck | accessToken: {} | decryptData: {} | md5Check: {} | cacheAccessToken: {}",
                 accessTokenStr,
                 decryptData,

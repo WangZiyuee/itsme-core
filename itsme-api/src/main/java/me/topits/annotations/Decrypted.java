@@ -6,11 +6,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 接口解密
  * @author QingKe
- * @date 2020-09-14 14:49
+ * @date 2020-09-14 14:47
  **/
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface NeedLogin {
+public @interface Decrypted {
 
 }

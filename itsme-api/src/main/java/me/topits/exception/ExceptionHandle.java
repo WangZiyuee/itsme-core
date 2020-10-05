@@ -1,7 +1,7 @@
 package me.topits.exception;
 
 import lombok.extern.slf4j.Slf4j;
-import me.topits.enums.BaseResponseStatusEnum;
+import me.topits.enums.BaseStatusEnum;
 import me.topits.model.BaseResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -24,44 +24,24 @@ public class ExceptionHandle {
 
     @ExceptionHandler(value = {Exception.class, Error.class})
     @ResponseBody
-    public BaseResponse exception(Exception e) {
-        if (e instanceof InvalidTokenException) {
-            InvalidTokenException invalidTokenException = ((InvalidTokenException) e);
-            return BaseResponse.failure(BaseResponseStatusEnum.ACCESS_TOKEN_INVALID.getCode(),
-                    invalidTokenException.getMessage());
-        }
-
+    public BaseResponse<?> exception(Exception e) {
         if (e instanceof BaseException) {
             log.error("ExceptionHandle BaseException: ", e);
             BaseException baseException = ((BaseException) e);
-            return BaseResponse.failure(baseException.getCode(), baseException.getMessage());
+            return BaseResponse.failure(baseException.getStatusEnum().getCode(), baseException.getMessage());
         }
 
+        if (e instanceof InvalidTokenException) {
+            return BaseResponse.failure(BaseStatusEnum.ACCESS_TOKEN_INVALID);
+        }
         if (e instanceof IllegalArgumentException) {
-            log.error("ExceptionHandle IllegalArgumentException: ", e);
-            IllegalArgumentException illegalArgumentException = ((IllegalArgumentException) e);
-            return BaseResponse.failure(BaseResponseStatusEnum.ILLEGAL_ARGUMENT.getCode(),
-                    illegalArgumentException.getMessage());
+            return BaseResponse.failure(BaseStatusEnum.ILLEGAL_ARGUMENT);
         }
-
-        if (e instanceof MethodArgumentNotValidException || e instanceof BindException) {
-            log.error("ExceptionHandle MethodArgumentNotValidException or BindException: ", e);
-            return BaseResponse.failure(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS.getReasonPhrase());
-        }
-
         if (e instanceof NoHandlerFoundException) {
-            return BaseResponse.failure(HttpStatus.NOT_FOUND.getReasonPhrase());
+            return BaseResponse.failure(BaseStatusEnum.API_NO_FOUND);
         }
-        if (e instanceof HttpRequestMethodNotSupportedException) {
-            return BaseResponse.failure(HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase());
-        }
-        if (e instanceof HttpMessageNotReadableException) {
-            return BaseResponse.failure(HttpStatus.NOT_ACCEPTABLE.getReasonPhrase());
-        }
-        if (e instanceof HttpMediaTypeNotSupportedException) {
-            return BaseResponse.failure(HttpStatus.UNSUPPORTED_MEDIA_TYPE.getReasonPhrase());
-        }
-        log.error("ExceptionHandle Unknown: ", e);
+
+        log.error("ExceptionHandle Unknown", e);
         return BaseResponse.failure(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
     }
 }

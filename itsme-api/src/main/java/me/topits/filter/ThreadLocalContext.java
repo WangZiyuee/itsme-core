@@ -21,7 +21,6 @@ public class ThreadLocalContext {
     public final static InheritableThreadLocal<Object> RESULT = new InheritableThreadLocal<>();
 
     public static void buildRequestContext(RequestWrapper requestWrapper) {
-        // TODO: 2020-09-07 body异常json 抛针对性异常
         // params
         JSONObject params = new JSONObject(16);
         if (requestWrapper.getContentType() != null
@@ -65,11 +64,6 @@ public class ThreadLocalContext {
 
     public static SysParams getSysParams() {
         return SYS_PARAMS.get();
-    }
-
-
-    public static Object getParam(String key) {
-        return PARAMS.get().get(key);
     }
 
     public static String getHeader(String key) {

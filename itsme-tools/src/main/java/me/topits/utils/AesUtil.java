@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 
 /**
+ * 对称加密, 适合长数据.
  * @author QingKe
  * @date 2020-09-14 16:18
  **/

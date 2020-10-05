@@ -1,5 +1,6 @@
 package me.topits.filter;
 
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.util.StreamUtils;
 
 import javax.servlet.ReadListener;
@@ -29,7 +30,12 @@ public class RequestWrapper extends HttpServletRequestWrapper {
     public RequestWrapper(HttpServletRequest httpServletRequest) {
         super(httpServletRequest);
         try {
-            body = StreamUtils.copyToByteArray(httpServletRequest.getInputStream());
+            if (httpServletRequest.getContentType() != null
+                    && httpServletRequest.getContentType().contains("json")) {
+                body = StreamUtils.copyToByteArray(httpServletRequest.getInputStream());
+            } else {
+                body = "{}".getBytes();
+            }
         } catch (Exception ignore) {
         }
     }
