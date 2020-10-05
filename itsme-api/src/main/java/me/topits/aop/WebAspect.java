@@ -4,16 +4,12 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import me.topits.annotations.Decrypted;
 import me.topits.annotations.Encrypted;
-import me.topits.annotations.NeedLogin;
 import me.topits.configuration.SysSecretProperties;
 import me.topits.enums.BaseStatusEnum;
 import me.topits.exception.BaseException;
-import me.topits.exception.InvalidTokenException;
 import me.topits.filter.ThreadLocalContext;
 import me.topits.model.BaseRequest;
 import me.topits.model.BaseResponse;
-import me.topits.service.IAccessTokenService;
-import me.topits.service.model.AccessTokenCheckModel;
 import me.topits.utils.RsaUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -23,7 +19,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.lang.reflect.Method;
 
 /**
@@ -34,9 +29,6 @@ import java.lang.reflect.Method;
 @Aspect
 @Component
 public class WebAspect {
-
-    @Resource
-    IAccessTokenService accessTokenService;
 
     @Pointcut(value = "(@annotation(org.springframework.web.bind.annotation.RequestMapping)" +
             "||@annotation(org.springframework.web.bind.annotation.PostMapping)) " +
@@ -65,24 +57,8 @@ public class WebAspect {
         MethodSignature methodSignature = ((MethodSignature) signature);
         Object target = joinPoint.getTarget();
         Method method = target.getClass().getMethod(methodSignature.getName(), methodSignature.getParameterTypes());
-        boolean isNeedLoginCheck = method.getAnnotation(NeedLogin.class) != null;
         boolean isNeedDecrypted = method.getAnnotation(Decrypted.class) != null;
         boolean isNeedEncrypted = method.getAnnotation(Encrypted.class) != null;
-
-        // need login
-        if (isNeedLoginCheck) {
-            String accessToken = ThreadLocalContext.getSysParams().getAccessToken();
-            AccessTokenCheckModel checkModel = accessTokenService.checkAccessToken(accessToken);
-            if (checkModel.isValid()) {
-                if (baseRequest != null) {
-                    JSONObject extra = new JSONObject();
-                    extra.put("userId", checkModel.getUserId());
-                    baseRequest.setExtraParams(extra);
-                }
-            } else {
-                throw new InvalidTokenException(checkModel.getErrorMessage());
-            }
-        }
 
         // need decrypted
         if (isNeedDecrypted) {

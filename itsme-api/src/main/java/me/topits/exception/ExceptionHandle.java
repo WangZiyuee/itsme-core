@@ -4,11 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import me.topits.enums.BaseStatusEnum;
 import me.topits.model.BaseResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.BindException;
-import org.springframework.web.HttpMediaTypeNotSupportedException;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -31,9 +26,6 @@ public class ExceptionHandle {
             return BaseResponse.failure(baseException.getStatusEnum().getCode(), baseException.getMessage());
         }
 
-        if (e instanceof InvalidTokenException) {
-            return BaseResponse.failure(BaseStatusEnum.ACCESS_TOKEN_INVALID);
-        }
         if (e instanceof IllegalArgumentException) {
             return BaseResponse.failure(BaseStatusEnum.ILLEGAL_ARGUMENT);
         }
