@@ -34,6 +34,8 @@ public class MybatisGeneratorConfig {
 
     public void execute() {
         AutoGenerator autoGenerator = new AutoGenerator();
+        // 选择 freemarker 引擎需要指定如下加，注意 pom 依赖必须有！
+        autoGenerator.setTemplateEngine(new FreemarkerTemplateEngine());
         this.setAutoGenerator(autoGenerator);
         // 全局配置
         autoGenerator.setGlobalConfig(this.getGlobalConfig());
@@ -48,8 +50,6 @@ public class MybatisGeneratorConfig {
         // 策略配置
         autoGenerator.setStrategy(this.getStrategyConfig());
 
-        // 选择 freemarker 引擎需要指定如下加，注意 pom 依赖必须有！
-        autoGenerator.setTemplateEngine(new FreemarkerTemplateEngine());
         autoGenerator.execute();
     }
 

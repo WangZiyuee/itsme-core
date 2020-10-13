@@ -1,7 +1,6 @@
 package me.topits.utils;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -9,6 +8,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
+import java.util.Base64;
 
 /**
  * 对称加密, 适合长数据.
@@ -39,7 +39,7 @@ public class AesUtil {
             // 加密
             byte[] binaryData = cipher.doFinal(dataBytes);
             // 通过Base64转码返回
-            return new String(Base64.encodeBase64(binaryData));
+            return Base64.getEncoder().encodeToString(binaryData);
         } catch (Exception e) {
             log.info("encrypt", e);
         }
@@ -57,7 +57,7 @@ public class AesUtil {
         try {
             Cipher cipher = Cipher.getInstance(DEFAULT_CIPHER_ALGORITHM);
             cipher.init(Cipher.DECRYPT_MODE, getSecretKey(secret));
-            byte[] binaryData = cipher.doFinal(Base64.decodeBase64(data));
+            byte[] binaryData = cipher.doFinal(Base64.getDecoder().decode(data));
             return new String(binaryData, StandardCharsets.UTF_8);
         } catch (Exception e) {
             log.info("decrypt Exception", e);

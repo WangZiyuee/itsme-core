@@ -16,7 +16,7 @@ import java.util.Map;
 public class ThreadLocalContext {
 
     public final static InheritableThreadLocal<JSONObject> PARAMS = new InheritableThreadLocal<>();
-    public final static InheritableThreadLocal<JSONObject> HEADER = new InheritableThreadLocal<>();
+    public final static InheritableThreadLocal<Map<String, String>> HEADER = new InheritableThreadLocal<>();
     public final static InheritableThreadLocal<SysParams> SYS_PARAMS = new InheritableThreadLocal<>();
     public final static InheritableThreadLocal<Object> RESULT = new InheritableThreadLocal<>();
 
@@ -41,7 +41,7 @@ public class ThreadLocalContext {
         ThreadLocalContext.PARAMS.set(params);
 
         // header
-        JSONObject header = new JSONObject(32);
+        Map<String, String> header = new HashMap<>(32);
         Enumeration<String> headerNames = requestWrapper.getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String key = headerNames.nextElement();
@@ -66,8 +66,8 @@ public class ThreadLocalContext {
         return SYS_PARAMS.get();
     }
 
-    public static String getHeader(String key) {
-        return HEADER.get().getString(key);
+    public static String getHeaderValue(String key) {
+        return HEADER.get().get(key);
     }
 
 

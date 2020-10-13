@@ -1,9 +1,7 @@
 package me.topits.model;
 
-import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.springframework.util.StringUtils;
 
 import java.util.Map;
 
@@ -40,15 +38,15 @@ public class SysParams {
     /** 网络类型 */
     private String netType;
 
-    public SysParams(JSONObject header) {
-        this.sign = header.getString("sign");
-        this.accessToken = header.getString("access_token");
-        this.timestamp = header.getString("timestamp");
-        this.osType = header.getString("os_type");
-        this.osVersion = header.getString("os_version");
-        this.appVersion = header.getString("app_version");
-        this.ipAddress = header.getString("ip_address");
-        this.netType = header.getString("net_type");
+    public SysParams(Map<String, String> header) {
+        this.sign = header.get("sign");
+        this.accessToken = header.get("access_token");
+        this.timestamp = header.get("timestamp");
+        this.osType = header.get("os_type");
+        this.osVersion = header.get("os_version");
+        this.appVersion = header.get("app_version");
+        this.ipAddress = header.get("ip_address");
+        this.netType = header.get("net_type");
     }
 
 }
