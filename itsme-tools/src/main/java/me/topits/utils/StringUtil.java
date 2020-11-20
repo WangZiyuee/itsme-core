@@ -33,6 +33,17 @@ public class StringUtil {
         return (separatorIndex != -1 ? path.substring(separatorIndex + 1) : path);
     }
 
+    public static boolean isEqual(byte[] a, byte[] b) {
+        if (a.length != b.length) {
+            return false;
+        }
+        int result = 0;
+        for (int i = 0; i < a.length; i++) {
+            result |= a[i] ^ b[i];
+        }
+        return result == 0;
+    }
+
     public static String format(String format, Object... args) {
         return parse("{", "}", format, args);
     }

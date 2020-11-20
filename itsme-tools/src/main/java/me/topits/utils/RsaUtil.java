@@ -33,7 +33,6 @@ public class RsaUtil {
         }
     }
 
-
     /**
      * 生成密钥对
      *
@@ -255,7 +254,6 @@ public class RsaUtil {
         assert keyPair != null;
         String publicKey = keyPair.get("publicKey");
         String privateKey = keyPair.get("privateKey");
-        ;
         log.info("publicKey {}", publicKey);
         log.info("privateKey {}", privateKey);
         log.info("{}", "公钥加密, 私钥解密");
